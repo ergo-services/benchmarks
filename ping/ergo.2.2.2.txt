@@ -1,0 +1,21 @@
+goos: linux
+goarch: amd64
+pkg: ping
+cpu: AMD Ryzen Threadripper 3970X 32-Core Processor 
+BenchmarkNode/atom-64         	  727545	      1895 ns/op
+BenchmarkNode/string-64       	  718394	      1745 ns/op
+BenchmarkNode/int8-64         	  813385	      1754 ns/op
+BenchmarkNode/int-64          	  663273	      1773 ns/op
+BenchmarkNode/int64-64        	  861187	      1784 ns/op
+BenchmarkNode/float-64        	  714232	      1746 ns/op
+BenchmarkNode/PID-64          	  641652	      1999 ns/op
+BenchmarkNode/Ref-64          	  742284	      2016 ns/op
+BenchmarkNode/MapStringInt10-64         	  439836	      3183 ns/op
+BenchmarkNode/MapStringInt100-64        	  100600	     11443 ns/op
+BenchmarkNode/MapStringInt1000-64       	   35540	     33150 ns/op
+BenchmarkNode/SliceInt10-64             	  527031	      2331 ns/op
+BenchmarkNode/SliceInt100-64            	  230610	      5067 ns/op
+BenchmarkNode/SliceInt1000-64           	   54496	     18691 ns/op
+BenchmarkNode/StructFlat-64             	  435471	      3196 ns/op
+PASS
+ok  	ping	22.145s
