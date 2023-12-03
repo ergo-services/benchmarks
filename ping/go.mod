@@ -1,12 +1,19 @@
 module ping
 
-go 1.19
+go 1.20
 
-require github.com/ergo-services/ergo v1.999.222
+replace ergo.services/ergo => ../../ergo3
+
+replace ergo.services/logger/colored => /home/taras/devel/ergo.services/logger/colored
 
 require (
-	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794 // indirect
-	golang.org/x/perf v0.0.0-20230227161431-f7320a6d63e8 // indirect
+	ergo.services/ergo v0.0.0-00010101000000-000000000000
+	ergo.services/logger/colored v0.0.0-00010101000000-000000000000
 )
 
-replace github.com/ergo-services/ergo => ../../ergo
+require (
+	github.com/fatih/color v1.15.0 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+)
