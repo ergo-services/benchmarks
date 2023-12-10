@@ -36,7 +36,6 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 			p.Send(m.to, "hi")
 		}
 		p.Log().Info("sent %d messages", m.n)
-
 		wg.Done()
 	case sendCase1N:
 		p.Log().Info("sending %d messages", m.n)
@@ -45,10 +44,8 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 			wg.Add(1)
 			n := i % l
 			p.Send(m.to[n], "hi")
-			p.Log().Info("sent to %s", m.to[n])
 		}
 		p.Log().Info("sent %d messages", m.n)
-
 		wg.Done()
 
 	default:

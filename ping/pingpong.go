@@ -21,6 +21,10 @@ import (
 	"ergo.services/logger/colored"
 )
 
+const (
+	TestMessage string = "hi"
+)
+
 type sendCase11 struct {
 	to gen.PID
 	n  int
@@ -45,11 +49,13 @@ func init() {
 	options.Log.Level = gen.LogLevelTrace
 	options.Network.Cookie = "cookie"
 	l := gen.Listener{
-		Handshake: handshake.Create(handshake.Options{PoolSize: 25}),
+		Handshake: handshake.Create(handshake.Options{PoolSize: 5}),
 	}
 	options.Network.Listeners = append(options.Network.Listeners, l)
 
-	loggercolored, err := colored.CreateLogger(colored.Options{})
+	loggercolored, err := colored.CreateLogger(colored.Options{
+		TimeFormat: time.DateTime,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -119,7 +125,7 @@ func runTestNetwork11() {
 
 	sc := sendCase11{
 		to: bpids[0],
-		n:  5000_000,
+		n:  10, //10_000_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
@@ -145,7 +151,7 @@ func runTestNetwork1N() {
 
 	sc := sendCase1N{
 		to: bpids,
-		n:  10,
+		n:  10_000_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
@@ -164,11 +170,38 @@ func runTestNetwork1N() {
 	killProcesses(a, apids, b, bpids)
 }
 
+func runTestNetworkNN() {
+	a := nodeping
+	b := nodepong
+	apids, bpids := startProcesses(a, 10, b, 10)
+
+	sc := sendCase1N{
+		to: bpids,
+		n:  100_000,
+	}
+	time.Sleep(time.Second)
+	nodepong.Log().Info("-------------------------------------------------------------------")
+	nodeping.Log().Info("BENCHMARK N-N: 100 processes (%s) sends %d messages to 100 processes (%s) ",
+		nodeping.Name(), sc.n, nodepong.Name())
+	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
+		panic(err)
+	}
+
+	start := time.Now()
+	wg.Wait()
+	elapsed := time.Since(start)
+
+	nodepong.Log().Info("received %d messages. %v msg/sec", sc.n*10, float64(sc.n*10)/elapsed.Seconds())
+	nodepong.Log().Info("-------------------------------------------------------------------")
+	killProcesses(a, apids, b, bpids)
+}
 func main() {
 
 	nodeping.Log().Info("-------------------------- OVER NETWORK ---------------------------")
-	//runTestNetwork11()
-	runTestNetwork1N()
+	time.Sleep(3 * time.Second)
+	runTestNetwork11()
+	// runTestNetwork1N()
+	// runTestNetworkNN()
 
 	nodeping.Wait()
 }
