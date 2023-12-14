@@ -16,6 +16,7 @@ import (
 
 	"ergo.services/ergo"
 	"ergo.services/ergo/gen"
+	"ergo.services/ergo/lib"
 	"ergo.services/ergo/net/edf"
 	"ergo.services/ergo/net/handshake"
 	"ergo.services/logger/colored"
@@ -46,10 +47,10 @@ var (
 func init() {
 	var err error
 	options := gen.NodeOptions{}
-	options.Log.Level = gen.LogLevelTrace
+	// options.Log.Level = gen.LogLevelTrace
 	options.Network.Cookie = "cookie"
 	l := gen.Listener{
-		Handshake: handshake.Create(handshake.Options{PoolSize: 5}),
+		Handshake: handshake.Create(handshake.Options{PoolSize: 15}),
 	}
 	options.Network.Listeners = append(options.Network.Listeners, l)
 
@@ -125,7 +126,7 @@ func runTestNetwork11() {
 
 	sc := sendCase11{
 		to: bpids[0],
-		n:  10, //10_000_000,
+		n:  10_000_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
@@ -177,17 +178,18 @@ func runTestNetworkNN() {
 
 	sc := sendCase1N{
 		to: bpids,
-		n:  100_000,
+		n:  200_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
-	nodeping.Log().Info("BENCHMARK N-N: 100 processes (%s) sends %d messages to 100 processes (%s) ",
+	nodeping.Log().Info("BENCHMARK N-N: 10 processes (%s) sends %d messages to 10 processes (%s) ",
 		nodeping.Name(), sc.n, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
 		panic(err)
 	}
 
 	start := time.Now()
+	nodeping.Log().Info("Started at %d...", start.UnixNano())
 	wg.Wait()
 	elapsed := time.Since(start)
 
@@ -197,12 +199,14 @@ func runTestNetworkNN() {
 }
 func main() {
 
+	lib.StatBuffers()
 	nodeping.Log().Info("-------------------------- OVER NETWORK ---------------------------")
 	time.Sleep(3 * time.Second)
-	runTestNetwork11()
+	// runTestNetwork11()
 	// runTestNetwork1N()
-	// runTestNetworkNN()
+	runTestNetworkNN()
 
+	lib.StatBuffers()
 	nodeping.Wait()
 }
 
