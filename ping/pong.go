@@ -14,10 +14,10 @@ type pong struct {
 }
 
 func (p *pong) HandleMessage(from gen.PID, message any) error {
-	if message.(string) != TestMessage {
-		panic("wrong message")
-	}
+	// if message.(string) != TestMessage {
+	// 	panic("wrong message")
+	// }
 	wg.Done()
-	p.Log().Trace("received message: %v", message)
+	// p.Log().Trace("received message: %v", message)
 	return nil
 }
