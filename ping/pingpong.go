@@ -126,6 +126,80 @@ func killProcesses(a gen.Node, apids []gen.PID, b gen.Node, bpids []gen.PID) {
 	}
 }
 
+func runTestLocal11() {
+	a := nodeping
+	apids, bpids := startProcesses(a, 1, a, 1)
+
+	sc := sendCase11{
+		to: bpids[0],
+		n:  1_000_000,
+	}
+	time.Sleep(time.Second)
+	nodepong.Log().Info("--------------------------------------------------------------------------")
+	nodeping.Log().Info("BENCHMARK 1-1: 1 process sends %d messages to 1 process", sc.n)
+	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
+		panic(err)
+	}
+
+	start := time.Now()
+	wg.Wait()
+	elapsed := time.Since(start)
+
+	nodeping.Log().Info("received %d messages. %f msg/sec", sc.n, float64(sc.n)/elapsed.Seconds())
+	killProcesses(a, apids, a, bpids)
+}
+
+func runTestLocal1N() {
+	a := nodeping
+	NPROC := NCPU * 2
+	apids, bpids := startProcesses(a, 1, a, NPROC)
+
+	sc := sendCase1N{
+		to: bpids,
+		n:  1_000_000,
+	}
+	time.Sleep(time.Second)
+	nodepong.Log().Info("--------------------------------------------------------------------------")
+	nodeping.Log().Info("BENCHMARK 1-N: 1 process sends %d messages to %d processes ",
+		sc.n, NPROC)
+	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
+		panic(err)
+	}
+
+	start := time.Now()
+	wg.Wait()
+	elapsed := time.Since(start)
+
+	nodeping.Log().Info("received %d messages. %f msg/sec", sc.n, float64(sc.n)/elapsed.Seconds())
+	killProcesses(a, apids, a, bpids)
+}
+
+func runTestLocalNN() {
+	a := nodeping
+	NPROC := NCPU * 1
+	apids, bpids := startProcesses(a, NPROC, a, NPROC)
+
+	sc := sendCaseNN{
+		to: bpids,
+		n:  1000_000,
+	}
+	time.Sleep(time.Second)
+	nodepong.Log().Info("--------------------------------------------------------------------------")
+	nodeping.Log().Info("BENCHMARK N-N: %d processes send %d messages to %d processes",
+		NPROC, sc.n*NPROC, NPROC)
+	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
+		panic(err)
+	}
+
+	start := time.Now()
+	// nodeping.Log().Info("Started at %d...", start.UnixNano())
+	wg.Wait()
+	elapsed := time.Since(start)
+
+	nodeping.Log().Info("received %d messages. %f msg/sec", sc.n*NPROC, float64(sc.n*NPROC)/elapsed.Seconds())
+	killProcesses(a, apids, a, bpids)
+}
+
 func runTestNetwork11() {
 	a := nodeping
 	b := nodepong
@@ -205,6 +279,13 @@ func runTestNetworkNN() {
 }
 
 func main() {
+	nodeping.Log().Info("-------------------------- LOCAL (start) ----------------------------------")
+	nodeping.Log().Info("N CPU: %d", NCPU)
+	time.Sleep(3 * time.Second)
+	runTestLocal11()
+	runTestLocal1N()
+	runTestLocalNN()
+	nodeping.Log().Info("-------------------------- LOCAL (end) ------------------------------------")
 
 	// lib.StatBuffers()
 	nodeping.Log().Info("-------------------------- OVER NETWORK (start) ---------------------------")
