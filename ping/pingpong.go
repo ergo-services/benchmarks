@@ -136,7 +136,7 @@ func runTestNetwork11() {
 		n:  1_000_000,
 	}
 	time.Sleep(time.Second)
-	nodepong.Log().Info("-------------------------------------------------------------------")
+	nodepong.Log().Info("--------------------------------------------------------------------------")
 	nodeping.Log().Info("BENCHMARK 1-1: 1 process (%s) sends %d messages to 1 process (%s) ",
 		nodeping.Name(), sc.n, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
@@ -148,7 +148,6 @@ func runTestNetwork11() {
 	elapsed := time.Since(start)
 
 	nodepong.Log().Info("received %d messages. %f msg/sec", sc.n, float64(sc.n)/elapsed.Seconds())
-	nodepong.Log().Info("-------------------------------------------------------------------")
 	killProcesses(a, apids, b, bpids)
 }
 
@@ -163,7 +162,7 @@ func runTestNetwork1N() {
 		n:  1_000_000,
 	}
 	time.Sleep(time.Second)
-	nodepong.Log().Info("-------------------------------------------------------------------")
+	nodepong.Log().Info("--------------------------------------------------------------------------")
 	nodeping.Log().Info("BENCHMARK 1-N: 1 process (%s) sends %d messages to %d processes (%s) ",
 		nodeping.Name(), sc.n, NPROC, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
@@ -175,7 +174,6 @@ func runTestNetwork1N() {
 	elapsed := time.Since(start)
 
 	nodepong.Log().Info("received %d messages. %f msg/sec", sc.n, float64(sc.n)/elapsed.Seconds())
-	nodepong.Log().Info("-------------------------------------------------------------------")
 	killProcesses(a, apids, b, bpids)
 }
 
@@ -190,7 +188,7 @@ func runTestNetworkNN() {
 		n:  1000_000,
 	}
 	time.Sleep(time.Second)
-	nodepong.Log().Info("-------------------------------------------------------------------")
+	nodepong.Log().Info("--------------------------------------------------------------------------")
 	nodeping.Log().Info("BENCHMARK N-N: %d processes (%s) send %d messages to %d processes (%s) ",
 		NPROC, nodeping.Name(), sc.n*NPROC, NPROC, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
@@ -203,23 +201,20 @@ func runTestNetworkNN() {
 	elapsed := time.Since(start)
 
 	nodepong.Log().Info("received %d messages. %f msg/sec", sc.n*NPROC, float64(sc.n*NPROC)/elapsed.Seconds())
-	nodepong.Log().Info("-------------------------------------------------------------------")
 	killProcesses(a, apids, b, bpids)
 }
 
 func main() {
 
 	// lib.StatBuffers()
-	nodeping.Log().Info("-------------------------- OVER NETWORK ---------------------------")
+	nodeping.Log().Info("-------------------------- OVER NETWORK (start) ---------------------------")
 	nodeping.Log().Info("Network pool: %d TCP-links", POOLSIZE)
 	nodeping.Log().Info("N CPU: %d", NCPU)
 	time.Sleep(3 * time.Second)
 	runTestNetwork11()
 	runTestNetwork1N()
 	runTestNetworkNN()
-
-	// lib.StatBuffers()
-	nodeping.Wait()
+	nodeping.Log().Info("-------------------------- OVER NETWORK (stop) ----------------------------")
 }
 
 func registerTypes() error {
