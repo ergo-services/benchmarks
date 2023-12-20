@@ -1,13 +1,3 @@
-// to run bench:
-//   $ go test -bench . | tee ./output.version1.txt
-// repeat it for the another version
-//
-// if 'benchstat' is not installed:
-//   $ go install golang.org/x/perf/cmd/benchstat@latest
-//
-// to see the diff:
-//   $ benchstat ./output.version1.txt ./output.version2.txt
-
 package main
 
 import (
@@ -259,7 +249,7 @@ func runTestNetworkNN() {
 
 	sc := sendCaseNN{
 		to: bpids,
-		n:  1000_000,
+		n:  1_000_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("--------------------------------------------------------------------------")
@@ -286,7 +276,6 @@ func main() {
 	runTestLocalNN()
 	nodeping.Log().Info("-------------------------- LOCAL (end) ------------------------------------")
 
-	// lib.StatBuffers()
 	nodeping.Log().Info("-------------------------- OVER NETWORK (start) ---------------------------")
 	nodeping.Log().Info("Network pool: %d TCP-links", POOLSIZE)
 	nodeping.Log().Info("N CPU: %d", NCPU)
@@ -295,6 +284,8 @@ func main() {
 	runTestNetwork1N()
 	runTestNetworkNN()
 	nodeping.Log().Info("-------------------------- OVER NETWORK (stop) ----------------------------")
+
+	nodeping.Wait()
 }
 
 func registerTypes() error {

@@ -23,7 +23,6 @@ func (p *ping) HandleMessage(from gen.PID, message any) error {
 	if _, err := p.MonitorEvent(sendEvent); err != nil {
 		return err
 	}
-	// p.Log().Info("subscribed to %s", sendEvent)
 	wg.Add(1)
 	return nil
 }
@@ -31,12 +30,10 @@ func (p *ping) HandleMessage(from gen.PID, message any) error {
 func (p *ping) HandleEvent(message gen.MessageEvent) error {
 	switch m := message.Message.(type) {
 	case sendCase11:
-		// p.Log().Info("sending %d messages", m.n)
 		for i := 0; i < m.n; i++ {
 			wg.Add(1)
 			p.Send(m.to, "hi")
 		}
-		// p.Log().Info("sent %d messages", m.n)
 		wg.Done()
 
 	case sendCase1N:
@@ -49,11 +46,9 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 			wg.Add(1)
 			p.Send(m.to[n], "hi")
 		}
-		// p.Log().Info("sent %d messages", m.n)
 		wg.Done()
 
 	case sendCaseNN:
-		// p.Log().Info("sending %d messages", m.n)
 		p.SetKeepOrder(false)
 		l := len(m.to)
 		for i := 0; i < m.n; i++ {
@@ -61,7 +56,6 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 			n := i % l
 			p.Send(m.to[n], "hi")
 		}
-		// p.Log().Info("sent %d messages", m.n)
 		wg.Done()
 
 	default:
