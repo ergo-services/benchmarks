@@ -40,7 +40,21 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 		wg.Done()
 
 	case sendCase1N:
+		// If we send messages sequentially over the process list m.to it makes the receiving
+		// process switch state back and forth from sleep to running. So use a bit different approach...
+		l := len(m.to)
+		x := m.n/l + m.n%l
+		for i := 0; i < m.n; i++ {
+			n := i / x
+			wg.Add(1)
+			p.Send(m.to[n], "hi")
+		}
+		// p.Log().Info("sent %d messages", m.n)
+		wg.Done()
+
+	case sendCaseNN:
 		// p.Log().Info("sending %d messages", m.n)
+		p.SetKeepOrder(false)
 		l := len(m.to)
 		for i := 0; i < m.n; i++ {
 			wg.Add(1)

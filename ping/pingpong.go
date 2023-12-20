@@ -11,12 +11,12 @@
 package main
 
 import (
+	"runtime"
 	"sync"
 	"time"
 
 	"ergo.services/ergo"
 	"ergo.services/ergo/gen"
-	// "ergo.services/ergo/lib"
 	"ergo.services/ergo/net/edf"
 	"ergo.services/ergo/net/handshake"
 	"ergo.services/logger/colored"
@@ -36,12 +36,19 @@ type sendCase1N struct {
 	n  int
 }
 
+type sendCaseNN struct {
+	to []gen.PID
+	n  int
+}
+
 var (
 	wg                 sync.WaitGroup
 	n                  uint32
 	nodeping, nodepong gen.Node
 	sendEvent          gen.Event = gen.Event{Name: "send", Node: "nodeping@localhost"}
 	token              gen.Ref
+	NCPU               int = runtime.NumCPU()
+	POOLSIZE               = NCPU * 2
 )
 
 func init() {
@@ -50,7 +57,7 @@ func init() {
 	// options.Log.Level = gen.LogLevelTrace
 	options.Network.Cookie = "cookie"
 	l := gen.Listener{
-		Handshake: handshake.Create(handshake.Options{PoolSize: 100}),
+		Handshake: handshake.Create(handshake.Options{PoolSize: POOLSIZE}),
 	}
 	options.Network.Listeners = append(options.Network.Listeners, l)
 
@@ -148,7 +155,8 @@ func runTestNetwork11() {
 func runTestNetwork1N() {
 	a := nodeping
 	b := nodepong
-	apids, bpids := startProcesses(a, 1, b, 128)
+	NPROC := NCPU * 2
+	apids, bpids := startProcesses(a, 1, b, NPROC)
 
 	sc := sendCase1N{
 		to: bpids,
@@ -156,8 +164,8 @@ func runTestNetwork1N() {
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
-	nodeping.Log().Info("BENCHMARK 1-N: 1 process (%s) sends %d messages to 64 processes (%s) ",
-		nodeping.Name(), sc.n, nodepong.Name())
+	nodeping.Log().Info("BENCHMARK 1-N: 1 process (%s) sends %d messages to %d processes (%s) ",
+		nodeping.Name(), sc.n, NPROC, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
 		panic(err)
 	}
@@ -172,19 +180,19 @@ func runTestNetwork1N() {
 }
 
 func runTestNetworkNN() {
-	ppp := 128
 	a := nodeping
 	b := nodepong
-	apids, bpids := startProcesses(a, ppp, b, ppp)
+	NPROC := NCPU * 1
+	apids, bpids := startProcesses(a, NPROC, b, NPROC)
 
-	sc := sendCase1N{
+	sc := sendCaseNN{
 		to: bpids,
 		n:  1000_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("-------------------------------------------------------------------")
 	nodeping.Log().Info("BENCHMARK N-N: %d processes (%s) send %d messages to %d processes (%s) ",
-		ppp, nodeping.Name(), sc.n*ppp, ppp, nodepong.Name())
+		NPROC, nodeping.Name(), sc.n*NPROC, NPROC, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
 		panic(err)
 	}
@@ -194,14 +202,17 @@ func runTestNetworkNN() {
 	wg.Wait()
 	elapsed := time.Since(start)
 
-	nodepong.Log().Info("received %d messages. %f msg/sec", sc.n*ppp, float64(sc.n*ppp)/elapsed.Seconds())
+	nodepong.Log().Info("received %d messages. %f msg/sec", sc.n*NPROC, float64(sc.n*NPROC)/elapsed.Seconds())
 	nodepong.Log().Info("-------------------------------------------------------------------")
 	killProcesses(a, apids, b, bpids)
 }
+
 func main() {
 
 	// lib.StatBuffers()
 	nodeping.Log().Info("-------------------------- OVER NETWORK ---------------------------")
+	nodeping.Log().Info("Network pool: %d TCP-links", POOLSIZE)
+	nodeping.Log().Info("N CPU: %d", NCPU)
 	time.Sleep(3 * time.Second)
 	runTestNetwork11()
 	runTestNetwork1N()
