@@ -270,7 +270,6 @@ func runTestNetworkNN() {
 	}
 
 	start := time.Now()
-	// nodeping.Log().Info("Started at %d...", start.UnixNano())
 	wg.Wait()
 	elapsed := time.Since(start)
 
@@ -279,9 +278,9 @@ func runTestNetworkNN() {
 }
 
 func main() {
+	time.Sleep(3 * time.Second)
 	nodeping.Log().Info("-------------------------- LOCAL (start) ----------------------------------")
 	nodeping.Log().Info("N CPU: %d", NCPU)
-	time.Sleep(3 * time.Second)
 	runTestLocal11()
 	runTestLocal1N()
 	runTestLocalNN()
