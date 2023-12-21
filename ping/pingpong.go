@@ -44,7 +44,6 @@ var (
 func init() {
 	var err error
 	options := gen.NodeOptions{}
-	// options.Log.Level = gen.LogLevelTrace
 	options.Network.Cookie = "cookie"
 	l := gen.Listener{
 		Handshake: handshake.Create(handshake.Options{PoolSize: POOLSIZE}),
@@ -244,8 +243,8 @@ func runTestNetwork1N() {
 func runTestNetworkNN() {
 	a := nodeping
 	b := nodepong
-	NPROC := NCPU * 1
-	apids, bpids := startProcesses(a, NPROC, b, NPROC)
+	NPROC := NCPU
+	apids, bpids := startProcesses(a, NPROC, b, NPROC*2)
 
 	sc := sendCaseNN{
 		to: bpids,
@@ -254,7 +253,7 @@ func runTestNetworkNN() {
 	time.Sleep(time.Second)
 	nodepong.Log().Info("--------------------------------------------------------------------------")
 	nodeping.Log().Info("BENCHMARK N-N: %d processes (%s) send %d messages to %d processes (%s) ",
-		NPROC, nodeping.Name(), sc.n*NPROC, NPROC, nodepong.Name())
+		NPROC, nodeping.Name(), sc.n*NPROC, NPROC*2, nodepong.Name())
 	if err := nodeping.SendEvent(sendEvent.Name, token, gen.MessageOptions{}, sc); err != nil {
 		panic(err)
 	}
