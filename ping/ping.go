@@ -15,7 +15,7 @@ type ping struct {
 
 func (p *ping) Init(args ...any) error {
 	p.Send(p.PID(), "")
-	p.SetKeepOrder(true)
+	p.SetKeepNetworkOrder(true)
 	return nil
 }
 
@@ -49,11 +49,11 @@ func (p *ping) HandleEvent(message gen.MessageEvent) error {
 		wg.Done()
 
 	case sendCaseNN:
-		p.SetKeepOrder(false)
+		p.SetKeepNetworkOrder(false)
 		l := len(m.to)
+		n := int(p.PID().ID) % l
 		for i := 0; i < m.n; i++ {
 			wg.Add(1)
-			n := i % l
 			p.Send(m.to[n], "hi")
 		}
 		wg.Done()

@@ -165,12 +165,12 @@ func runTestLocal1N() {
 
 func runTestLocalNN() {
 	a := nodeping
-	NPROC := NCPU * 1
+	NPROC := NCPU * 8
 	apids, bpids := startProcesses(a, NPROC, a, NPROC)
 
 	sc := sendCaseNN{
 		to: bpids,
-		n:  1000_000,
+		n:  100_000,
 	}
 	time.Sleep(time.Second)
 	nodepong.Log().Info("--------------------------------------------------------------------------")
@@ -279,9 +279,9 @@ func main() {
 	nodeping.Log().Info("Network pool: %d TCP-links", POOLSIZE)
 	nodeping.Log().Info("N CPU: %d", NCPU)
 	time.Sleep(3 * time.Second)
-	runTestNetwork11()
-	runTestNetwork1N()
-	runTestNetworkNN()
+	// runTestNetwork11()
+	// runTestNetwork1N()
+	// runTestNetworkNN()
 	nodeping.Log().Info("-------------------------- OVER NETWORK (stop) ----------------------------")
 
 	nodeping.Wait()
