@@ -279,9 +279,9 @@ func main() {
 	nodeping.Log().Info("Network pool: %d TCP-links", POOLSIZE)
 	nodeping.Log().Info("N CPU: %d", NCPU)
 	time.Sleep(3 * time.Second)
-	// runTestNetwork11()
-	// runTestNetwork1N()
-	// runTestNetworkNN()
+	runTestNetwork11()
+	runTestNetwork1N()
+	runTestNetworkNN()
 	nodeping.Log().Info("-------------------------- OVER NETWORK (stop) ----------------------------")
 
 	nodeping.Wait()
