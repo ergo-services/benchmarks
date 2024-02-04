@@ -14,6 +14,6 @@ type pong struct {
 }
 
 func (p *pong) HandleMessage(from gen.PID, message any) error {
-	wg.Done()
+	WG.Done()
 	return nil
 }
