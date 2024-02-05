@@ -51,7 +51,7 @@ func main() {
 	}
 	node.Log().Info("1M processes is started")
 
-	for {
+	for i := 0; i < 5; i++ {
 		mem()
 		time.Sleep(time.Second)
 		info, err := node.Info()
