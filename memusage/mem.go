@@ -61,6 +61,4 @@ func main() {
 		node.Log().Info("total processes: %d", info.ProcessesTotal)
 	}
 
-	node.Wait()
-
 }
