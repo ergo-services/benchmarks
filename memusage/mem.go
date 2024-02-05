@@ -22,10 +22,12 @@ func main() {
 	var mstat runtime.MemStats
 	var options gen.NodeOptions
 
+	options.Network.Cookie = "123"
 	options.Log.DefaultLogger.Disable = true
+	cl, err := colored.CreateLogger(colored.Options{})
 	loggercolored := gen.Logger{
 		Name:   "colored",
-		Logger: colored.CreateLogger(colored.Options{ShortTimestamp: true, ShortLevelNames: true}),
+		Logger: cl,
 	}
 	options.Log.Loggers = append(options.Log.Loggers, loggercolored)
 
