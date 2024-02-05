@@ -23,14 +23,17 @@ func main() {
 	var options gen.NodeOptions
 
 	options.Network.Cookie = "123"
-	options.Log.DefaultLogger.Disable = true
-	cl, err := colored.CreateLogger(colored.Options{})
-	loggercolored := gen.Logger{
-		Name:   "colored",
-		Logger: cl,
+	loggercolored, err := colored.CreateLogger(colored.Options{
+		TimeFormat: time.DateTime,
+	})
+	if err != nil {
+		panic(err)
 	}
-	options.Log.Loggers = append(options.Log.Loggers, loggercolored)
-
+	options.Log.DefaultLogger.Disable = true
+	options.Log.Loggers = append(
+		options.Log.Loggers,
+		gen.Logger{Name: "colored", Logger: loggercolored},
+	)
 	node, err := ergo.StartNode("demo@localhost", options)
 	if err != nil {
 		panic(err)
