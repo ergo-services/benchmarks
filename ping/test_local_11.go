@@ -1,14 +1,15 @@
 package main
 
 import (
+	"time"
+
 	"ergo.services/ergo"
 	"ergo.services/ergo/gen"
 	"ergo.services/logger/colored"
-	"time"
 )
 
 func runTestLocal11() {
-	N := 1_000_000
+	N := 3_000_000
 	// prepare node
 	options := gen.NodeOptions{}
 	options.Network.Cookie = "cookie"

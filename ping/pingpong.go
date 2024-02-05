@@ -4,11 +4,7 @@ import (
 	"runtime"
 	"sync"
 
-	// "os"
-
 	"ergo.services/ergo/gen"
-	// "runtime/pprof"
-	// "runtime/trace"
 )
 
 type startSend struct {
@@ -48,5 +44,7 @@ func main() {
 	// defer trace.Stop()
 
 	// runTestLocal11()
-	runTestLocalNN()
+	// runTestLocalNN()
+	runTestNetwork11()
+	runTestNetworkNN()
 }

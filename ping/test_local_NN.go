@@ -1,10 +1,11 @@
 package main
 
 import (
+	"time"
+
 	"ergo.services/ergo"
 	"ergo.services/ergo/gen"
 	"ergo.services/logger/colored"
-	"time"
 )
 
 func runTestLocalNN() {
@@ -36,7 +37,7 @@ func runTestLocalNN() {
 	}
 	nodeping.Log().Info("-------------------------- LOCAL N-N (start) ----------------------------------")
 	nodeping.Log().Info("N CPU: %d", NCPU)
-	// starting 1 ping process
+	// starting N ping processes
 	np := NCPU * 2
 	WGready.Add(np)
 	for i := 0; i < np; i++ {
@@ -44,7 +45,7 @@ func runTestLocalNN() {
 			panic(err)
 		}
 	}
-	nodeping.Log().Info("BENCHMARK: %d process sends %d messages to %d process", np, np*N, np)
+	nodeping.Log().Info("BENCHMARK: %d processes send %d messages to %d process", np, np*N, np)
 	WGready.Wait() // created monitor on the event and spawned a pong process
 
 	WGready.Add(np)

@@ -19,7 +19,7 @@ type ping_network struct {
 
 func (p *ping_network) Init(args ...any) error {
 	p.remote = args[0].(gen.Atom)
-	p.remote_pong = args[0].(gen.Atom)
+	p.remote_pong = args[1].(gen.Atom)
 	p.Send(p.PID(), "")
 	return nil
 }
@@ -37,15 +37,16 @@ func (p *ping_network) HandleMessage(from gen.PID, message any) error {
 		return err
 	}
 	p.pair = pid
-	WG.Add(1)
+	WGready.Done()
 	return nil
 }
 
 func (p *ping_network) HandleEvent(message gen.MessageEvent) error {
 	switch m := message.Message.(type) {
 	case startSend:
+		WG.Add(1 + m.n)
+		WGready.Done()
 		for i := 0; i < m.n; i++ {
-			WG.Add(1)
 			p.SendPID(p.pair, 1)
 		}
 		WG.Done()
