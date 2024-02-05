@@ -9,6 +9,7 @@ replace ergo.services/logger/colored => /home/taras/devel/ergo.services/logger/c
 require (
 	ergo.services/ergo v0.0.0-00010101000000-000000000000
 	ergo.services/logger/colored v0.0.0-00010101000000-000000000000
+	github.com/klauspost/cpuid/v2 v2.2.6
 )
 
 require (

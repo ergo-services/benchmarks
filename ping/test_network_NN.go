@@ -7,11 +7,12 @@ import (
 	"ergo.services/ergo/gen"
 	"ergo.services/ergo/net/handshake"
 	"ergo.services/logger/colored"
+	. "github.com/klauspost/cpuid/v2"
 )
 
 func runTestNetworkNN() {
 	N := 3_000_000
-	POOLSIZE := 5
+	POOLSIZE := 4
 	// prepare nodes
 	options := gen.NodeOptions{}
 	options.Network.Cookie = "cookie"
@@ -52,9 +53,10 @@ func runTestNetworkNN() {
 		panic(err)
 	}
 	nodeping.Log().Info("-------------------------- NETWORK N-N (start) ----------------------------------")
-	nodeping.Log().Info("N CPU: %d", NCPU)
+	nodeping.Log().Info("CPU: %s (Physical Cores: %d)", CPU.BrandName, CPU.PhysicalCores)
+	nodeping.Log().Info("Runtime CPUs: %d", NCPU)
 	// starting N ping processes
-	np := NCPU / 2
+	np := NCPU
 	WGready.Add(np)
 	for i := 0; i < np; i++ {
 		if _, err := nodeping.Spawn(factory_ping_network, gen.ProcessOptions{}, nodepong.Name(), pong); err != nil {

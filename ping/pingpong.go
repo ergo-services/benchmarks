@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"runtime"
 	"sync"
+	"time"
 
 	"ergo.services/ergo/gen"
 )
@@ -43,8 +45,14 @@ func main() {
 	// }
 	// defer trace.Stop()
 
-	// runTestLocal11()
-	// runTestLocalNN()
+	runTestLocal11()
+	fmt.Println("")
+	time.Sleep(time.Second * 10)
+	runTestLocalNN()
+	fmt.Println("")
+	time.Sleep(time.Second * 10)
 	runTestNetwork11()
+	fmt.Println("")
+	time.Sleep(time.Second * 10)
 	runTestNetworkNN()
 }
