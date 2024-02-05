@@ -6,6 +6,7 @@ import (
 	"ergo.services/ergo"
 	"ergo.services/ergo/gen"
 	"ergo.services/logger/colored"
+	. "github.com/klauspost/cpuid/v2"
 )
 
 func runTestNetwork11() {
@@ -46,7 +47,8 @@ func runTestNetwork11() {
 		panic(err)
 	}
 	nodeping.Log().Info("-------------------------- NETWORK 1-1 (start) ----------------------------------")
-	nodeping.Log().Info("N CPU: %d", NCPU)
+	nodeping.Log().Info("CPU: %s (Physical Cores: %d)", CPU.BrandName, CPU.PhysicalCores)
+	nodeping.Log().Info("Runtime CPUs: %d", NCPU)
 	// starting 1 ping process
 	WGready.Add(1)
 	if _, err := nodeping.Spawn(factory_ping_network, gen.ProcessOptions{}, nodepong.Name(), pong); err != nil {
