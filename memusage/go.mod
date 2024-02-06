@@ -1,6 +1,6 @@
 module memusage
 
-replace ergo.services/ergo => ../../ergo3
+replace ergo.services/ergo => ../../ergo
 
 replace ergo.services/logger/colored => ../../logger/colored
 

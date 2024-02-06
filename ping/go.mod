@@ -2,7 +2,7 @@ module ping
 
 go 1.20
 
-replace ergo.services/ergo => ../../ergo3
+replace ergo.services/ergo => ../../ergo
 
 replace ergo.services/logger/colored => /home/taras/devel/ergo.services/logger/colored
 
