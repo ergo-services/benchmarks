@@ -11,13 +11,12 @@ import (
 )
 
 func runTestNetworkNN() {
-	N := 3_000_000
-	POOLSIZE := 4
+	N := 1_000_000
 	// prepare nodes
 	options := gen.NodeOptions{}
 	options.Network.Cookie = "cookie"
 	l := gen.Listener{
-		Handshake: handshake.Create(handshake.Options{PoolSize: POOLSIZE}),
+		Handshake: handshake.Create(handshake.Options{PoolSize: NCPU / 2}),
 	}
 	options.Network.Listeners = append(options.Network.Listeners, l)
 	loggercolored, err := colored.CreateLogger(colored.Options{
@@ -63,7 +62,7 @@ func runTestNetworkNN() {
 			panic(err)
 		}
 	}
-	nodeping.Log().Info("BENCHMARK: %d processes send %d messages to %d process", np, np*N, np)
+	nodeping.Log().Info("BENCHMARK: %d processes send %d messages to %d processes", np, np*N, np)
 	WGready.Wait() // created monitor on the event and spawned a pong process
 
 	WGready.Add(np)
