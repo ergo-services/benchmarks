@@ -8,6 +8,11 @@ import (
 	"ergo.services/ergo/act"
 	"ergo.services/ergo/gen"
 	"ergo.services/logger/colored"
+	. "github.com/klauspost/cpuid/v2"
+)
+
+var (
+	NCPU int = runtime.NumCPU()
 )
 
 func factory_simple() gen.ProcessBehavior {
@@ -19,7 +24,6 @@ type simple struct {
 }
 
 func main() {
-	var mstat runtime.MemStats
 	var options gen.NodeOptions
 
 	options.Network.Cookie = "123"
@@ -39,29 +43,39 @@ func main() {
 		panic(err)
 	}
 
-	mem := func() {
-		runtime.ReadMemStats(&mstat)
-		node.Log().Info("memory usage: %d", mstat.Alloc)
+	mem := func(proc bool) {
+		info, _ := node.Info()
+		if proc == false {
+			node.Log().Info("Memory usage: %.2f Kb", float64(info.MemoryUsed)/1024.0)
+		} else {
+			node.Log().Info("Memory usage: %.2f Kb", float64(info.MemoryUsed)/1024.0)
+			node.Log().Info("Total processes: %d (memory per process ~%.2f Kb)",
+				info.ProcessesTotal,
+				(float64(info.MemoryUsed)/float64(info.ProcessesTotal))/1024.0)
+		}
 		runtime.GC()
 	}
+	node.Log().Info("-------------------------- Memory usage (start) ----------------------------------")
+	node.Log().Info("CPU: %s (Physical Cores: %d)", CPU.BrandName, CPU.PhysicalCores)
+	node.Log().Info("Runtime CPUs: %d", NCPU)
 
-	mem()
-	node.Log().Info("starting 1M processes...")
+	mem(false)
+	node.Log().Info("Starting 1M processes...")
+	start := time.Now()
 	for i := 0; i < 1000000; i++ {
 		if _, err := node.Spawn(factory_simple, gen.ProcessOptions{}); err != nil {
 			panic(err)
 		}
 	}
-	node.Log().Info("1M processes is started")
+	node.Log().Info("1M processes is started. Elapsed: %s", time.Since(start))
 
-	for i := 0; i < 5; i++ {
-		mem()
+	for i := 0; i < 3; i++ {
+		mem(true)
 		time.Sleep(time.Second)
-		info, err := node.Info()
 		if err != nil {
 			panic(err)
 		}
-		node.Log().Info("total processes: %d", info.ProcessesTotal)
 	}
+	node.Log().Info("-------------------------- Memory usage (end) ----------------------------------")
 
 }
