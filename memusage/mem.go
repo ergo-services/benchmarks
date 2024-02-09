@@ -73,9 +73,6 @@ func main() {
 	for i := 0; i < 3; i++ {
 		mem(true)
 		time.Sleep(time.Second)
-		if err != nil {
-			panic(err)
-		}
 	}
 	node.Log().Info("-------------------------- Memory usage (end) ----------------------------------")
 
