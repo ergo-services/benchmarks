@@ -38,7 +38,7 @@ func main() {
 		options.Log.Loggers,
 		gen.Logger{Name: "colored", Logger: loggercolored},
 	)
-	node, err := ergo.StartNode("demo@localhost", options)
+	node, err := ergo.StartNode("mem@localhost", options)
 	if err != nil {
 		panic(err)
 	}

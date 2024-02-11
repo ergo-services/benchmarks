@@ -3,8 +3,8 @@ module memusage
 go 1.21.6
 
 require (
-	ergo.services/ergo v1.999.225-0.20240206064330-d690b97e5e87
-	ergo.services/logger v0.0.0-20240208173200-61401117c239
+	ergo.services/ergo v1.999.225-0.20240211195125-a665511fc989
+	ergo.services/logger v0.0.0-20240211195646-53a653f65fa7
 	github.com/klauspost/cpuid/v2 v2.2.6
 )
 
