@@ -45,13 +45,12 @@ func main() {
 
 	mem := func(proc bool) {
 		info, _ := node.Info()
-		if proc == false {
-			node.Log().Info("Memory usage: %.2f Kb", float64(info.MemoryUsed)/1024.0)
-		} else {
-			node.Log().Info("Memory usage: %.2f Kb", float64(info.MemoryUsed)/1024.0)
+		node.Log().Info("Memory allocated (runtime): %.2f Kb", float64(info.MemoryAlloc)/1024.0)
+		node.Log().Info("Memory used (OS): %.2f Kb", float64(info.MemoryUsed)/1024.0)
+		if proc {
 			node.Log().Info("Total processes: %d (memory per process ~%.2f Kb)",
 				info.ProcessesTotal,
-				(float64(info.MemoryUsed)/float64(info.ProcessesTotal))/1024.0)
+				(float64(info.MemoryAlloc)/float64(info.ProcessesTotal))/1024.0)
 		}
 		runtime.GC()
 	}
