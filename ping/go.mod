@@ -4,7 +4,7 @@ go 1.21.6
 
 require (
 	ergo.services/ergo v1.999.225-0.20240606191206-1e15b2a6774b
-	ergo.services/logger v0.0.0-20240611054923-d4a8b9c37a82
+	ergo.services/logger v0.0.0-20240611164232-9b393c59fb46
 	github.com/klauspost/cpuid/v2 v2.2.6
 )
 
