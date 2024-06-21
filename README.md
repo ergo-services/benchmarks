@@ -6,7 +6,7 @@
 
 # Benchmarks of the Ergo Framework 3.0 (and above)
 
-The tests below are performed on the laptop Lenovo Thinkpad x390 (2019)
+The tests below are performed on the laptop Macbook Air M3 (2024)
 
 ## Ping
 
@@ -25,4 +25,4 @@ Performs the following scenario:
  - Starts 1M processes
  - Takes node information 3 times with 1s intervals to make sure the GC has freed unused memory
 
-![image](https://github.com/ergo-services/benchmarks/assets/118860/18a4a6fb-6b0b-4603-84f6-4c08bd100d9e)
+![image](https://github.com/ergo-services/benchmarks/assets/118860/ead567bb-beae-40bf-b881-519e89ce1190)
