@@ -16,8 +16,7 @@ Performs 4 scenarios:
  - 1 process spawns 'pong'-process on a remote node and sends 3M messages
  - N processes spawn 'pong'-process on a remote node and send 1M messages (N = number of CPU)
 
-![image](https://github.com/ergo-services/benchmarks/assets/118860/bdd4fdce-aba2-4d8c-8471-ab33995eb415)
-
+![image](https://github.com/ergo-services/benchmarks/assets/118860/31e17b33-ce92-4ef1-8dec-d6bcac0ab66f)
 
 ## Memory usage (per process)
 
