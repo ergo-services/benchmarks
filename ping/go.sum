@@ -1,7 +1,7 @@
-ergo.services/ergo v1.999.225-0.20240621150454-5c5e70cc2612 h1:muvVFDVRbIHEsQQgmtRxWUbQJt3gb78tid7/JnHFkic=
-ergo.services/ergo v1.999.225-0.20240621150454-5c5e70cc2612/go.mod h1:bLQ6PoO6Mz/8gVuzvPv3xfMfo1P9w6rZV1WnMXMeMdg=
-ergo.services/logger v0.0.0-20240621114050-733d3d93d196 h1:Z5c7mhood8X27TTWTc4cko3WrICpYdoWRdnm5GkjSr0=
-ergo.services/logger v0.0.0-20240621114050-733d3d93d196/go.mod h1:XNPAlXiu0Pm/4UJkcN6+op+q5RogZmdo1eLweBD2Xmk=
+ergo.services/ergo v1.999.225-0.20240709061508-0f67ce5e0fdd h1:YtSKv08uDfnkk+5HvGZDheKiKItuomcJio7JSGSiQ2Q=
+ergo.services/ergo v1.999.225-0.20240709061508-0f67ce5e0fdd/go.mod h1:bLQ6PoO6Mz/8gVuzvPv3xfMfo1P9w6rZV1WnMXMeMdg=
+ergo.services/logger v0.0.0-20240709160717-c17651ed15f4 h1:OR0eSQoIpT0Yb2jpsYFnfg4bgm+giXAMHNxbdRpXw4o=
+ergo.services/logger v0.0.0-20240709160717-c17651ed15f4/go.mod h1:B/rMxY/BAJ4hA8ZkXAH8cWDSy9Dv69R5yw47kFCLH0s=
 github.com/fatih/color v1.16.0 h1:zmkK9Ngbjj+K0yRhTVONQh1p/HknKYSlNT+vZCzyokM=
 github.com/fatih/color v1.16.0/go.mod h1:fL2Sau1YI5c0pdGEVCbKQbLXB6edEj1ZgiY4NijnWvE=
 github.com/klauspost/cpuid/v2 v2.2.6 h1:ndNyv040zDGIDh8thGkXYjnFtiN02M1PVVF+JE/48xc=

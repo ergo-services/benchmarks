@@ -16,10 +16,10 @@ func runTestNetworkNN() {
 	// prepare nodes
 	options := gen.NodeOptions{}
 	options.Network.Cookie = "cookie"
-	l := gen.Listener{
+	a := gen.AcceptorOptions{
 		Handshake: handshake.Create(handshake.Options{PoolSize: NCPU / 2}),
 	}
-	options.Network.Listeners = append(options.Network.Listeners, l)
+	options.Network.Acceptors = append(options.Network.Acceptors, a)
 	loggercolored, err := colored.CreateLogger(colored.Options{
 		TimeFormat: time.DateTime,
 	})
