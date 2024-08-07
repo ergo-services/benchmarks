@@ -1,10 +1,10 @@
 module memusage
 
-go 1.21.6
+go 1.20
 
 require (
-	ergo.services/ergo v1.999.225-0.20240709061508-0f67ce5e0fdd
-	ergo.services/logger v0.0.0-20240709160717-c17651ed15f4
+	ergo.services/ergo v1.999.225-0.20240806171217-92f6f9df7e97
+	ergo.services/logger v0.0.0-20240807054359-80176729b270
 	github.com/klauspost/cpuid/v2 v2.2.6
 )
 
