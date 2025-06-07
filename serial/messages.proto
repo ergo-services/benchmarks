@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package serial;
+
+option go_package = "benchmarks/protobuf";
+
+message PID {
+  string node = 1;
+  uint32 id = 2;
+  uint32 creation = 3;
+}
+
+message ProcessID {
+  string node = 1;
+  string name = 2;
+}
+
+message Ref {
+  string node = 1;
+  uint32 id = 2;
+  uint32 creation = 3;
+}
+
+message TestStruct {
+  float a = 1;
+  double b = 2;
+  bytes c = 3;
+}
+
+message ComplexStruct {
+  string name = 1;
+  int32 id = 2;
+  repeated string tags = 3;
+  map<string, string> metadata = 4;
+  PID pid = 5;
+  ProcessID process_id = 6;
+}
+
+message NestedStruct {
+  string name = 1;
+  int32 id = 2;
+  ComplexStruct complex = 3;
+  map<string, ComplexStruct> complex_map = 4;
+  map<string, string> nested_map = 5;
+}
+
+message SimpleStruct {
+  string name = 1;
+  int32 id = 2;
+}
+
+message MapMessage {
+  map<string, SimpleStruct> map = 1;
+}
+
+message NestedMapMessage {
+  map<string, MapMessage> map = 1;
+} 
