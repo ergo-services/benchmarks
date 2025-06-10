@@ -1,5 +1,5 @@
-ergo.services/ergo v1.999.301-0.20250607180745-18e2a906b158 h1:frYE9ncbTuMX0otxpjGj/sBcSgnF9vUlkE0YjTBNVvs=
-ergo.services/ergo v1.999.301-0.20250607180745-18e2a906b158/go.mod h1:bLQ6PoO6Mz/8gVuzvPv3xfMfo1P9w6rZV1WnMXMeMdg=
+ergo.services/ergo v1.999.301-0.20250610084446-27f3fb04739f h1:AXDB3N0WOfo8j9nk57ktKhtZxiyXkUHwRG9u2gExTnA=
+ergo.services/ergo v1.999.301-0.20250610084446-27f3fb04739f/go.mod h1:bLQ6PoO6Mz/8gVuzvPv3xfMfo1P9w6rZV1WnMXMeMdg=
 github.com/google/go-cmp v0.5.5 h1:Khx7svrCpmxxtHBq5j2mp/xVjsi8hQMfNLvJFAlrGgU=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=
