@@ -3,6 +3,7 @@ package serial
 import (
 	"bytes"
 	"encoding/gob"
+	"sync"
 	"testing"
 
 	"ergo.services/ergo/gen"
@@ -21,6 +22,256 @@ func init() {
 	edf.RegisterTypeOf(NestedStructValue{})
 	edf.RegisterTypeOf(SimpleStructValue{})
 }
+
+// =============================================================================
+// TYPE CACHING BENCHMARKS - EDF Optimized with Type Cache
+// =============================================================================
+// These benchmarks demonstrate the performance benefits of using EDF's
+// type caching feature which significantly reduces memory allocations
+// and improves encoding/decoding speed for complex types.
+
+// Benchmark Encode String with Type Cache
+func BenchmarkEncodeStringCached(b *testing.B) {
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	// Create shared type cache for improved performance
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		buf.Reset()
+		if err := edf.Encode("Ergo Framework", buf, options); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Decode String with Type Cache
+func BenchmarkDecodeStringCached(b *testing.B) {
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	if err := edf.Encode("Ergo Framework", buf, options); err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _, err := edf.Decode(buf.B, options)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Encode Map with Type Cache (should show biggest improvement)
+func BenchmarkEncodeMapCached(b *testing.B) {
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	value := map[string]SimpleStructValue{
+		"key1": {Name: "value1", Id: 1},
+		"key2": {Name: "value2", Id: 2},
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		buf.Reset()
+		if err := edf.Encode(value, buf, options); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Decode Map with Type Cache
+func BenchmarkDecodeMapCached(b *testing.B) {
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	value := map[string]SimpleStructValue{
+		"key1": {Name: "value1", Id: 1},
+		"key2": {Name: "value2", Id: 2},
+	}
+
+	if err := edf.Encode(value, buf, options); err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _, err := edf.Decode(buf.B, options)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Encode Complex Struct with Type Cache
+func BenchmarkEncodeComplexStructCached(b *testing.B) {
+	value := ComplexStructValue{
+		Name:      "test",
+		Id:        123,
+		Tags:      []string{"tag1", "tag2"},
+		Metadata:  map[string]string{"key1": "value1", "key2": "value2"},
+		Pid:       gen.PID{Node: "node1", ID: 1, Creation: 1},
+		ProcessId: gen.ProcessID{Node: "node1", Name: "process1"},
+	}
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		buf.Reset()
+		if err := edf.Encode(value, buf, options); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Decode Complex Struct with Type Cache
+func BenchmarkDecodeComplexStructCached(b *testing.B) {
+	value := ComplexStructValue{
+		Name:      "test",
+		Id:        123,
+		Tags:      []string{"tag1", "tag2"},
+		Metadata:  map[string]string{"key1": "value1", "key2": "value2"},
+		Pid:       gen.PID{Node: "node1", ID: 1, Creation: 1},
+		ProcessId: gen.ProcessID{Node: "node1", Name: "process1"},
+	}
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	if err := edf.Encode(value, buf, options); err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _, err := edf.Decode(buf.B, options)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Encode Nested Struct with Type Cache (should show massive improvement)
+func BenchmarkEncodeNestedStructCached(b *testing.B) {
+	value := NestedStructValue{
+		Name: "nested_test",
+		Id:   456,
+		Complex: ComplexStructValue{
+			Name:      "complex_value",
+			Id:        789,
+			Tags:      []string{"nested_tag1", "nested_tag2"},
+			Metadata:  map[string]string{"nested_key": "nested_value"},
+			Pid:       gen.PID{Node: "nested_node", ID: 2, Creation: 2},
+			ProcessId: gen.ProcessID{Node: "nested_node", Name: "nested_process"},
+		},
+		ComplexMap: map[string]ComplexStructValue{
+			"complex1": {
+				Name:     "complex1",
+				Id:       100,
+				Tags:     []string{"tag1"},
+				Metadata: map[string]string{"key1": "value1"},
+			},
+			"complex2": {
+				Name:     "complex2",
+				Id:       200,
+				Tags:     []string{"tag2"},
+				Metadata: map[string]string{"key2": "value2"},
+			},
+		},
+		NestedMap: map[string]string{
+			"key1": "value1",
+			"key2": "value2",
+		},
+	}
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		buf.Reset()
+		if err := edf.Encode(value, buf, options); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// Benchmark Decode Nested Struct with Type Cache
+func BenchmarkDecodeNestedStructCached(b *testing.B) {
+	value := NestedStructValue{
+		Name: "nested_test",
+		Id:   456,
+		Complex: ComplexStructValue{
+			Name:      "complex_value",
+			Id:        789,
+			Tags:      []string{"nested_tag1", "nested_tag2"},
+			Metadata:  map[string]string{"nested_key": "nested_value"},
+			Pid:       gen.PID{Node: "nested_node", ID: 2, Creation: 2},
+			ProcessId: gen.ProcessID{Node: "nested_node", Name: "nested_process"},
+		},
+		ComplexMap: map[string]ComplexStructValue{
+			"complex1": {
+				Name:     "complex1",
+				Id:       100,
+				Tags:     []string{"tag1"},
+				Metadata: map[string]string{"key1": "value1"},
+			},
+			"complex2": {
+				Name:     "complex2",
+				Id:       200,
+				Tags:     []string{"tag2"},
+				Metadata: map[string]string{"key2": "value2"},
+			},
+		},
+		NestedMap: map[string]string{
+			"key1": "value1",
+			"key2": "value2",
+		},
+	}
+	buf := lib.TakeBuffer()
+	defer lib.ReleaseBuffer(buf)
+
+	cache := &sync.Map{}
+	options := edf.Options{Cache: cache}
+
+	if err := edf.Encode(value, buf, options); err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _, err := edf.Decode(buf.B, options)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+}
+
+// =============================================================================
+// ORIGINAL BENCHMARKS (for comparison)
+// =============================================================================
 
 // Benchmark Encode String
 func BenchmarkEncodeString(b *testing.B) {
