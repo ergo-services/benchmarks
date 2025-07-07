@@ -44,5 +44,7 @@ EDF and Gob rely on runtime reflection, which dynamically inspects and serialize
 
 *Format: `time ns/op, memory B/op, allocations/op`*
 
+*Hardware: `Apple M4 Max`*
+
 
 
