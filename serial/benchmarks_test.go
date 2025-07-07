@@ -3,6 +3,8 @@ package serial
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
+	reflect "reflect"
 	"sync"
 	"testing"
 
@@ -10,6 +12,15 @@ import (
 	"ergo.services/ergo/lib"
 	"ergo.services/ergo/net/edf"
 	"google.golang.org/protobuf/proto"
+)
+
+var (
+	cache           = &sync.Map{}
+	regCache        = &sync.Map{}
+	edfOptionsCache = edf.Options{
+		Cache:    cache,
+		RegCache: regCache,
+	}
 )
 
 func init() {
@@ -21,6 +32,18 @@ func init() {
 	edf.RegisterTypeOf(ComplexStructValue{})
 	edf.RegisterTypeOf(NestedStructValue{})
 	edf.RegisterTypeOf(SimpleStructValue{})
+
+	regTypeName := func(t reflect.Type) string {
+		return fmt.Sprintf("#%s/%s", t.PkgPath(), t.Name())
+	}
+
+	fmt.Println(regTypeName(reflect.TypeOf(ComplexStructValue{})))
+	regCache.Store(reflect.TypeOf(ComplexStructValue{}), []byte{131, 0x13, 0x88})
+	regCache.Store(uint16(5000), "#serial/ComplexStructValue")
+	regCache.Store(reflect.TypeOf(NestedStructValue{}), []byte{131, 0x13, 0x89})
+	regCache.Store(uint16(5001), "#serial/NestedStructValue")
+	regCache.Store(reflect.TypeOf(SimpleStructValue{}), []byte{131, 0x13, 0x8a})
+	regCache.Store(uint16(5002), "#serial/SimpleStructValue")
 }
 
 // =============================================================================
@@ -35,14 +58,10 @@ func BenchmarkEncodeStringCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	// Create shared type cache for improved performance
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		buf.Reset()
-		if err := edf.Encode("Ergo Framework", buf, options); err != nil {
+		if err := edf.Encode("Ergo Framework", buf, edfOptionsCache); err != nil {
 			b.Fatal(err)
 		}
 	}
@@ -53,10 +72,9 @@ func BenchmarkDecodeStringCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
 	options := edf.Options{Cache: cache}
 
-	if err := edf.Encode("Ergo Framework", buf, options); err != nil {
+	if err := edf.Encode("Ergo Framework", buf, edfOptionsCache); err != nil {
 		b.Fatal(err)
 	}
 
@@ -74,9 +92,6 @@ func BenchmarkEncodeMapCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
 	value := map[string]SimpleStructValue{
 		"key1": {Name: "value1", Id: 1},
 		"key2": {Name: "value2", Id: 2},
@@ -85,7 +100,7 @@ func BenchmarkEncodeMapCached(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		buf.Reset()
-		if err := edf.Encode(value, buf, options); err != nil {
+		if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 			b.Fatal(err)
 		}
 	}
@@ -96,21 +111,18 @@ func BenchmarkDecodeMapCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
 	value := map[string]SimpleStructValue{
 		"key1": {Name: "value1", Id: 1},
 		"key2": {Name: "value2", Id: 2},
 	}
 
-	if err := edf.Encode(value, buf, options); err != nil {
+	if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 		b.Fatal(err)
 	}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, _, err := edf.Decode(buf.B, options)
+		_, _, err := edf.Decode(buf.B, edfOptionsCache)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -130,13 +142,10 @@ func BenchmarkEncodeComplexStructCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		buf.Reset()
-		if err := edf.Encode(value, buf, options); err != nil {
+		if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 			b.Fatal(err)
 		}
 	}
@@ -155,16 +164,13 @@ func BenchmarkDecodeComplexStructCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
-	if err := edf.Encode(value, buf, options); err != nil {
+	if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 		b.Fatal(err)
 	}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, _, err := edf.Decode(buf.B, options)
+		_, _, err := edf.Decode(buf.B, edfOptionsCache)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -206,13 +212,10 @@ func BenchmarkEncodeNestedStructCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		buf.Reset()
-		if err := edf.Encode(value, buf, options); err != nil {
+		if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 			b.Fatal(err)
 		}
 	}
@@ -253,16 +256,13 @@ func BenchmarkDecodeNestedStructCached(b *testing.B) {
 	buf := lib.TakeBuffer()
 	defer lib.ReleaseBuffer(buf)
 
-	cache := &sync.Map{}
-	options := edf.Options{Cache: cache}
-
-	if err := edf.Encode(value, buf, options); err != nil {
+	if err := edf.Encode(value, buf, edfOptionsCache); err != nil {
 		b.Fatal(err)
 	}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_, _, err := edf.Decode(buf.B, options)
+		_, _, err := edf.Decode(buf.B, edfOptionsCache)
 		if err != nil {
 			b.Fatal(err)
 		}
