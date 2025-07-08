@@ -30,7 +30,9 @@ Performs the following scenario:
 ## Serialization benchmarks: EDF vs Protobuf vs Gob
 
 These benchmarks compare EDF, EDF (+cache), Protobuf, and Gob serialization performance across common data types.
-EDF and Gob rely on runtime reflection, which dynamically inspects and serializes data structures at runtime. Protobuf uses code generation, producing static type-safe marshalling and unmarshalling logic.
+ - EDF and Gob rely on runtime reflection, which dynamically inspects and serializes data structures at runtime
+ - Protobuf uses code generation, producing static type-safe marshalling and unmarshalling logic.
+   
 | Data Type | EDF | EDF (+cache) | Protobuf | Gob | Winner | EDF Advantage |
 |-----------|-----|--------------|----------|-----|---------|---------------|
 | String Encode | 29.96ns, 53B, 0a | **23.45ns, 0B, 0a** | 44.37ns, 32B, 1a | 76.42ns, 16B, 1a | **EDF+Cache** | 47% faster than Protobuf, 69% faster than Gob |
