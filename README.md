@@ -45,6 +45,7 @@ These benchmarks compare EDF, EDF (+cache), Protobuf, and Gob serialization perf
 | Nested Struct Decode | 2137ns, 4594B, 107a | 2291ns, 5438B, 120a | **1684ns, 2544B, 71a** | 12729ns, 14712B, 342a | **Protobuf** | EDF 27% slower, but 6x faster than Gob |
 
 *Format: `time ns/op, memory B/op, allocations/op`*
+
 *Run with `go test -bench=. -benchmem`*
 
 *Hardware: `Apple M4 Max`*
