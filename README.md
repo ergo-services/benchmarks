@@ -27,6 +27,24 @@ Performs the following scenario:
 
 ![image](https://github.com/ergo-services/benchmarks/assets/118860/ead567bb-beae-40bf-b881-519e89ce1190)
 
+## Distributed Pub/Sub (1M subscribers)
+
+Demonstrates event delivery performace by publishing 1 event from 1 producer to 1,000,000 subscribers distributed across 10 nodes.
+
+Key optimization: Instead of 1,000,000 network messages (one per subscriber), only 10 network messages are sent (one per consumer node). Each node locally distributes to its 100K subscribers.
+
+Results:
+- Total subscribers: 1,000,000
+- Producer nodes: 1
+- Consumer nodes: 10
+- Time to deliver all: 342ms
+- Network messages sent: 10
+- Delivery rate: 2.9M msg/sec
+
+*Run with `go run .`*
+
+*Hardware: `Apple M4 Max`*
+
 ## Serialization benchmarks: EDF vs Protobuf vs Gob
 
 These benchmarks compare EDF, EDF (+cache), Protobuf, and Gob serialization performance across common data types.
