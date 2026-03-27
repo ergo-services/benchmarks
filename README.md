@@ -25,7 +25,7 @@ Performs the following scenario:
  - Starts 1M processes
  - Takes node information 3 times with 1s intervals to make sure the GC has freed unused memory
 
-![image](https://github.com/ergo-services/benchmarks/assets/118860/ead567bb-beae-40bf-b881-519e89ce1190)
+![image](memusage/result.png)
 
 ## Distributed Pub/Sub (1M subscribers)
 
