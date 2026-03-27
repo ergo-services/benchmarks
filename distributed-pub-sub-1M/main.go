@@ -52,7 +52,8 @@ func runFullBenchmark() {
 
 	// Create logger
 	loggercolored, err := colored.CreateLogger(colored.Options{
-		TimeFormat: time.DateTime,
+		TimeFormat:    time.DateTime,
+		DisableBanner: true,
 	})
 	if err != nil {
 		panic(err)
