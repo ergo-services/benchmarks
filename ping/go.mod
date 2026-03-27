@@ -3,7 +3,7 @@ module ping
 go 1.21.6
 
 require (
-	ergo.services/ergo v1.999.321-0.20260327075542-a10314a5766c
+	ergo.services/ergo v1.999.321-0.20260327124509-b105ef09c1ba
 	ergo.services/logger/colored v0.1.0
 	github.com/klauspost/cpuid/v2 v2.2.6
 )

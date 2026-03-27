@@ -3,7 +3,7 @@ module memusage
 go 1.20
 
 require (
-	ergo.services/ergo v1.999.321-0.20260327075542-a10314a5766c
+	ergo.services/ergo v1.999.321-0.20260327124509-b105ef09c1ba
 	ergo.services/logger/colored v0.0.0-20250904215210-2ed1711d3aba
 	github.com/klauspost/cpuid/v2 v2.2.6
 )
