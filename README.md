@@ -6,7 +6,7 @@
 
 # Benchmarks of the Ergo Framework 3.0 (and above)
 
-The tests below are performed on the laptop Macbook Air M3 (2024)
+The tests below are performed on the Apple M4 Max
 
 ## Ping
 
@@ -16,7 +16,7 @@ Performs 4 scenarios:
  - 1 process spawns 'pong'-process on a remote node and sends 3M messages
  - N processes spawn 'pong'-process on a remote node and send 1M messages (N = number of CPU)
 
-![image](https://github.com/ergo-services/benchmarks/assets/118860/31e17b33-ce92-4ef1-8dec-d6bcac0ab66f)
+![image](ping/result.png)
 
 ## Memory usage (per process)
 
