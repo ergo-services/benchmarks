@@ -3,8 +3,8 @@ module distributed-pub-sub-1M
 go 1.21.6
 
 require (
-	ergo.services/ergo v1.999.321-0.20260327124509-b105ef09c1ba
-	ergo.services/logger/colored v0.0.0-20250904215210-2ed1711d3aba
+	ergo.services/ergo v1.999.330
+	ergo.services/logger/colored v0.1.1
 	github.com/klauspost/cpuid/v2 v2.2.6
 )
 
